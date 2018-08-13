@@ -2,6 +2,7 @@
 // Created by Alexey Medvecky on 20/07/2018.
 //
 
+#include "tic_tac_toe.h"
 
 char field[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -14,30 +15,6 @@ int gameOn = 1;
 int playerOneWin = 0;
 
 int playerTwoWin = 0;
-
-char getField(int fieldNumber);
-
-void setField(int fieldNumber, char value);
-
-int isPlayerOneTurn(void);
-
-void setPlayerOneTurn(int state);
-
-int isTurnValid(void);
-
-void setTurnIsValid(int state);
-
-int isGameOn(void);
-
-void setIsGameOn(int value);
-
-int isPlayerOneWin(void);
-
-void setPlayerOneWin(int state);
-
-int isPlayerTwoWin(void);
-
-void setPlayerTwoWin(int state);
 
 char getField(int fieldNumber) {
     return field[fieldNumber - 1];

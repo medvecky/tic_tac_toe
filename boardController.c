@@ -4,31 +4,7 @@
 
 #include <stdio.h>
 
-void handleTurn(void);
-
-extern int isPlayerOneTurn(void);
-
-extern char getField(int fieldNumber);
-
-extern void setField(int fieldNumber, char value);
-
-extern void setPlayerOneTurn(int state);
-
-extern void setTurnIsValid(int state);
-
-extern void setPlayerOneWin(int state);
-
-extern void setPlayerTwoWin(int state);
-
-extern void setIsGameOn(int value);
-
-int checkTurn(int fieldNumber);
-
-void checkForWin(void);
-
-int trinityCheck(int field1, int field2, int field3);
-
-void deadHeatCheck(void);
+#include "tic_tac_toe.h"
 
 void handleTurn(void) {
     int fieldNumber;

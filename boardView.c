@@ -4,28 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern char getField(int fieldNumber);
-
-extern int isGameOn(void);
-
-extern int isTurnValid(void);
-
-extern int isPlayerOneTurn(void);
-
-extern void handleTurn(void);
-
-extern int isPlayerOneWin(void);
-
-extern int isPlayerTwoWin(void);
-
-void clearScreen(void);
-
-void showHeader(void);
-
-void drawBoard(void);
-
-void showFooter();
-
+#include "tic_tac_toe.h"
 void showBoard(void) {
     clearScreen();
     showHeader();
