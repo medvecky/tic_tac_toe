@@ -36,10 +36,10 @@ void drawBoard(void) {
 void showFooter(void) {
     if (isGameOn()) {
         if (isPlayerOneTurn()) {
-            printf("\nPlayer 1, enter a number:  ");
+            printf("\nPlayer 1, enter a number or q for exit:  ");
             handleTurn();
         } else {
-            printf("\nPlayer 2, enter a number:  ");
+            printf("\nPlayer 2, enter a number or q for exit:  ");
             handleTurn();
         }
         while (!isTurnValid()) {
