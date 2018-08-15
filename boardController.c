@@ -7,15 +7,8 @@
 
 #include "tic_tac_toe.h"
 
-void handleTurn(void) {
-    int fieldNumber;
+void handleTurn(int fieldNumber) {
     char turnValue;
-    char input = getchar();
-    if(input == 'q') {
-        exit(0);
-    }
-    while (getchar() != '\n');
-    fieldNumber = input - '0';
     if (isPlayerOneTurn()) {
         turnValue = 'X';
     } else {

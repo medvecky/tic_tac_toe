@@ -30,7 +30,7 @@ int isPlayerTwoWin(void);
 
 void setPlayerTwoWin(int state);
 
-void handleTurn(void);
+void handleTurn(int fieldNumber);
 
 int checkTurn(int fieldNumber);
 
@@ -47,3 +47,7 @@ void showHeader(void);
 void drawBoard(void);
 
 void showFooter();
+
+int getUserInput(void);
+
+void refreshScreen(void);

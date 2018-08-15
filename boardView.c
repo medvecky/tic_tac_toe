@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "tic_tac_toe.h"
+
 void showBoard(void) {
     clearScreen();
     showHeader();
@@ -37,25 +38,43 @@ void showFooter(void) {
     if (isGameOn()) {
         if (isPlayerOneTurn()) {
             printf("\nPlayer 1, enter a number or q for exit:  ");
-            handleTurn();
+            handleTurn(getUserInput());
         } else {
             printf("\nPlayer 2, enter a number or q for exit:  ");
-            handleTurn();
+            handleTurn(getUserInput());
         }
         while (!isTurnValid()) {
+            refreshScreen();
             printf("\nInvalid move. ");
-            handleTurn();
+            handleTurn(getUserInput());
         }
         showBoard();
     } else {
-        if(isPlayerOneWin()) {
+        if (isPlayerOneWin()) {
             printf("\n==>Player 1 win\n");
         } else if (isPlayerTwoWin()) {
             printf("\n==>Player 2 win\n");
         } else {
             printf("\n==>Nobody win\n");
         }
-     }
+    }
+}
+
+int getUserInput(void) {
+    char input = getchar();
+    if (input != '\n') {
+        while (getchar() != '\n');
+    }
+    if (input == 'q') {
+        exit(0);
+    }
+    return input - '0';
+}
+
+void refreshScreen(void){
+    clearScreen();
+    showHeader();
+    drawBoard();
 }
 
 
