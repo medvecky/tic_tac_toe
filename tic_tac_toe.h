@@ -51,3 +51,5 @@ void showFooter();
 int getUserInput(void);
 
 void refreshScreen(void);
+void initNcurses(void);
+

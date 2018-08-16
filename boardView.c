@@ -3,14 +3,15 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 
 #include "tic_tac_toe.h"
 
+void showBoardData(WINDOW * window, int highlight);
+
 void showBoard(void) {
-    clearScreen();
-    showHeader();
+    initNcurses();
     drawBoard();
-    showFooter();
 }
 
 void clearScreen(void) {
@@ -23,15 +24,43 @@ void showHeader(void) {
 }
 
 void drawBoard(void) {
-    for (int i = 1; i <= 9; i += 3) {
-        printf("     |     |     \n");
-        printf("  %c  |  %c  |  %c   \n", getField(i), getField(i + 1), getField(i + 2));
-        if (i < 5) {
-            printf("_____|_____|_____ \n");
-        } else {
-            printf("     |     |      \n");
+    int i, h;
+
+    int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+
+    WINDOW *boardWin = newwin(15,30, yMax / 2 - 7, xMax /2 - 15); //show on center of screen
+    box(boardWin,0,0);
+
+    refresh();
+    wrefresh(boardWin);
+
+    for (i = 0; i <= 12; i++) {
+//        add shifts from parent window borders
+        mvwaddch(boardWin,i + 1, 0 + 5, ACS_VLINE);
+        mvwaddch(boardWin,i + 1, 6 + 5, ACS_VLINE);
+        mvwaddch(boardWin,i + 1, 12 + 5, ACS_VLINE);
+        mvwaddch(boardWin,i + 1, 18 + 5, ACS_VLINE);
+
+        if (i % 4 == 0) {
+            for (h = 0; h <= 18; h++) {
+                mvwaddch(boardWin,i + 1 , h + 5 , ACS_HLINE);
+            }
         }
     }
+
+    showBoardData(boardWin,0);
+    wmove(boardWin,3,8);
+    refresh();
+    wrefresh(boardWin);
+
+    showBoardData(boardWin,2);
+    refresh();
+    wrefresh(boardWin);
+
+    getch();
+
+    endwin();
 }
 
 void showFooter(void) {
@@ -75,6 +104,33 @@ void refreshScreen(void){
     clearScreen();
     showHeader();
     drawBoard();
+}
+
+void initNcurses(void) {
+    initscr();
+    noecho();
+    cbreak();
+    curs_set(0);
+}
+
+void showBoardData(WINDOW * window, int highlight) {
+    int i = 0;
+    int x = 8;
+    int y = 3;
+    while(i < 10) {
+        wmove(window,y,x);
+        if(i + 1 == highlight) {
+         wattron(window,A_REVERSE);
+        }
+        mvwaddch(window,y, x, getField(i + 1));
+        wattroff(window,A_REVERSE);
+        i++;
+        x += 6;
+        if(i % 3 == 0) {
+            x = 8;
+            y += 4;
+        }
+    }
 }
 
 
