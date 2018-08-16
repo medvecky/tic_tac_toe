@@ -63,7 +63,7 @@ void showFooter(void) {
 int getUserInput(void) {
     char input = getchar();
     if (input != '\n') {
-        while (getchar() != '\n');
+        while (getchar() != '\n'); //remove non valid symbols from input stream
     }
     if (input == 'q') {
         exit(0);
