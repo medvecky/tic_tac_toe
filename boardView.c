@@ -13,6 +13,7 @@ void showBoard(void) {
     initNcurses();
     showHeader();
     drawBoard();
+    showFooter();
 }
 
 void clearScreen(void) {
@@ -69,36 +70,47 @@ void drawBoard(void) {
     showBoardData(boardWin, 2);
     refresh();
     wrefresh(boardWin);
-
-    getch();
-
-    endwin();
 }
 
 void showFooter(void) {
-    if (isGameOn()) {
-        if (isPlayerOneTurn()) {
-            printf("\nPlayer 1, enter a number or q for exit:  ");
-            handleTurn(getUserInput());
-        } else {
-            printf("\nPlayer 2, enter a number or q for exit:  ");
-            handleTurn(getUserInput());
-        }
-        while (!isTurnValid()) {
-            refreshScreen();
-            printf("\nInvalid move. ");
-            handleTurn(getUserInput());
-        }
-        showBoard();
-    } else {
-        if (isPlayerOneWin()) {
-            printf("\n==>Player 1 win\n");
-        } else if (isPlayerTwoWin()) {
-            printf("\n==>Player 2 win\n");
-        } else {
-            printf("\n==>Nobody win\n");
-        }
-    }
+
+    int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+
+    WINDOW *footerWin = newwin(5, 50, yMax / 2 + 8, xMax / 2 - 25); //show on center of screen
+    box(footerWin, 0, 0);
+    wbkgd(footerWin,COLOR_PAIR(2));
+
+    refresh();
+    wrefresh(footerWin);
+
+   getch();
+
+   endwin();
+
+//    if (isGameOn()) {
+//        if (isPlayerOneTurn()) {
+//            printf("\nPlayer 1, enter a number or q for exit:  ");
+//            handleTurn(getUserInput());
+//        } else {
+//            printf("\nPlayer 2, enter a number or q for exit:  ");
+//            handleTurn(getUserInput());
+//        }
+//        while (!isTurnValid()) {
+//            refreshScreen();
+//            printf("\nInvalid move. ");
+//            handleTurn(getUserInput());
+//        }
+//        showBoard();
+//    } else {
+//        if (isPlayerOneWin()) {
+//            printf("\n==>Player 1 win\n");
+//        } else if (isPlayerTwoWin()) {
+//            printf("\n==>Player 2 win\n");
+//        } else {
+//            printf("\n==>Nobody win\n");
+//        }
+//    }
 }
 
 int getUserInput(void) {
