@@ -9,15 +9,15 @@
 
 void showBoardData(WINDOW *window, int highlight);
 
+int getUserInput(WINDOW *footerwin);
+
+void gameOver(WINDOW *footerWin);
+
 void showBoard(void) {
     initNcurses();
     showHeader();
     drawBoard();
     showFooter();
-}
-
-void clearScreen(void) {
-    system("@cls||clear");
 }
 
 void showHeader(void) {
@@ -26,11 +26,13 @@ void showHeader(void) {
 
     WINDOW *headerWin = newwin(5, 50, yMax / 2 - 12, xMax / 2 - 25); //show on center of screen
     box(headerWin, 0, 0);
-    wbkgd(headerWin,COLOR_PAIR(2));
-    wmove(headerWin,1,17);
-    wprintw(headerWin,"Tic  Tac  Toe");
-    wmove(headerWin,2,9);
-    wprintw(headerWin,"Player 1 (X)  -  Player 2 (O)");
+    wbkgd(headerWin, COLOR_PAIR(2));
+    wmove(headerWin, 1, 17);
+    wattron(headerWin,A_BOLD);
+    wprintw(headerWin, "Tic  Tac  Toe");
+    wmove(headerWin, 2, 9);
+    wprintw(headerWin, "Player 1 (X)  -  Player 2 (O)");
+    wattroff(headerWin,A_BOLD);
     refresh();
     wrefresh(headerWin);
 }
@@ -43,7 +45,7 @@ void drawBoard(void) {
 
     WINDOW *boardWin = newwin(15, 30, yMax / 2 - 7, xMax / 2 - 15); //show on center of screen
     box(boardWin, 0, 0);
-    wbkgd(boardWin,COLOR_PAIR(3));
+    wbkgd(boardWin, COLOR_PAIR(3));
 
     refresh();
     wrefresh(boardWin);
@@ -63,11 +65,11 @@ void drawBoard(void) {
     }
 
     showBoardData(boardWin, 0);
-    wmove(boardWin, 3, 8);
-    refresh();
-    wrefresh(boardWin);
-
-    showBoardData(boardWin, 2);
+//    wmove(boardWin, 3, 8);
+//    refresh();
+//    wrefresh(boardWin);
+//
+//    showBoardData(boardWin, 2);
     refresh();
     wrefresh(boardWin);
 }
@@ -79,55 +81,69 @@ void showFooter(void) {
 
     WINDOW *footerWin = newwin(5, 50, yMax / 2 + 8, xMax / 2 - 25); //show on center of screen
     box(footerWin, 0, 0);
-    wbkgd(footerWin,COLOR_PAIR(2));
+    wbkgd(footerWin, COLOR_PAIR(2));
 
-    refresh();
-    wrefresh(footerWin);
-
-   getch();
-
-   endwin();
-
-//    if (isGameOn()) {
-//        if (isPlayerOneTurn()) {
-//            printf("\nPlayer 1, enter a number or q for exit:  ");
-//            handleTurn(getUserInput());
-//        } else {
-//            printf("\nPlayer 2, enter a number or q for exit:  ");
-//            handleTurn(getUserInput());
-//        }
-//        while (!isTurnValid()) {
-//            refreshScreen();
-//            printf("\nInvalid move. ");
-//            handleTurn(getUserInput());
-//        }
-//        showBoard();
-//    } else {
-//        if (isPlayerOneWin()) {
-//            printf("\n==>Player 1 win\n");
-//        } else if (isPlayerTwoWin()) {
-//            printf("\n==>Player 2 win\n");
-//        } else {
-//            printf("\n==>Nobody win\n");
-//        }
-//    }
+    if (isGameOn()) {
+        if (isPlayerOneTurn()) {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "Player 1, enter a number or q for exit:  ");
+            wattroff(footerWin,A_BOLD);
+            refresh();
+            wrefresh(footerWin);
+            handleTurn(getUserInput(footerWin));
+        } else {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "Player 2, enter a number or q for exit:  ");
+            wattroff(footerWin,A_BOLD);
+            refresh();
+            wrefresh(footerWin);
+            handleTurn(getUserInput(footerWin));
+        }
+        while (!isTurnValid()) {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "Invalid move.                                   ");
+            wattroff(footerWin,A_BOLD);
+            refresh();
+            wrefresh(footerWin);
+            handleTurn(getUserInput(footerWin));
+        }
+        showBoard();
+    } else {
+        if (isPlayerOneWin()) {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "==>Player 1 win");
+            wattroff(footerWin,A_BOLD);
+            gameOver(footerWin);
+        } else if (isPlayerTwoWin()) {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "==>Player 2 win");
+            wattroff(footerWin,A_BOLD);
+            gameOver(footerWin);
+        } else {
+            wmove(footerWin, 1, 1);
+            wattron(footerWin,A_BOLD);
+            wprintw(footerWin, "==>Nobody win");
+            wattroff(footerWin,A_BOLD);
+            gameOver(footerWin);
+        }
+    }
 }
 
-int getUserInput(void) {
-    char input = getchar();
+int getUserInput(WINDOW *footerWin) {
+    char input = wgetch(footerWin);
     if (input != '\n') {
-        while (getchar() != '\n'); //remove non valid symbols from input stream
+        while (wgetch(footerWin) != '\n'); //remove non valid symbols from input stream
     }
     if (input == 'q') {
+        endwin();
         exit(0);
     }
     return input - '0';
-}
-
-void refreshScreen(void) {
-    clearScreen();
-    showHeader();
-    drawBoard();
 }
 
 void initNcurses(void) {
@@ -135,9 +151,10 @@ void initNcurses(void) {
     noecho();
     cbreak();
     start_color();
-    init_pair(1,COLOR_WHITE,COLOR_BLUE);
-    init_pair(2,COLOR_GREEN,COLOR_BLUE);
-    init_pair(3,COLOR_YELLOW,COLOR_BLUE);
+    init_pair(1, COLOR_WHITE, COLOR_BLUE);
+    init_pair(2, COLOR_GREEN, COLOR_BLUE);
+    init_pair(3, COLOR_YELLOW, COLOR_BLUE);
+    init_pair(4, COLOR_RED, COLOR_BLUE);
     bkgd(COLOR_PAIR(1));
     curs_set(0);
 }
@@ -151,8 +168,19 @@ void showBoardData(WINDOW *window, int highlight) {
         if (i + 1 == highlight) {
             wattron(window, A_REVERSE);
         }
+        if(getField(i + 1) == 'X') {
+            wattron(window,A_BOLD);
+            wattron(window,COLOR_PAIR(4));
+        }
+        if(getField(i + 1) == 'O') {
+            wattron(window,A_BOLD);
+            wattron(window,COLOR_PAIR(1));
+        }
         mvwaddch(window, y, x, getField(i + 1));
         wattroff(window, A_REVERSE);
+        wattroff(window,COLOR_PAIR(4));
+        wattroff(window,COLOR_PAIR(1));
+        wattroff(window,A_BOLD);
         i++;
         x += 6;
         if (i % 3 == 0) {
@@ -160,6 +188,17 @@ void showBoardData(WINDOW *window, int highlight) {
             y += 4;
         }
     }
+}
+
+void gameOver(WINDOW *footerWin) {
+    wmove(footerWin, 2, 1);
+    wattron(footerWin,A_BOLD);
+    wprintw(footerWin, "Press any key to exit");
+    wattroff(footerWin,A_BOLD);
+    refresh();
+    wrefresh(footerWin);
+    getch();
+    endwin();
 }
 
 
