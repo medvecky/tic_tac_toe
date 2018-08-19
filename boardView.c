@@ -67,11 +67,6 @@ void drawBoard(void) {
     }
 
     showBoardData(0);
-//    wmove(boardWin, 3, 8);
-//    refresh();
-//    wrefresh(boardWin);
-//
-//    showBoardData(boardWin, 2);
     refresh();
     wrefresh(boardWin);
 }
@@ -166,7 +161,6 @@ int getUserInput(WINDOW *footerWin) {
                 if (highlight < 1) {
                     highlight = 1;
                 }
-                break;
                 break;
             case KEY_DOWN:
                 highlight+=3;
