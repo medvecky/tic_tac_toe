@@ -69,7 +69,7 @@ void showFooter(void) {
 }
 
 int getUserInput(void) {
-    char input = getchar();
+    int input = getchar();
     if (input != '\n') {
         while (getchar() != '\n'); //remove invalid symbols from input stream
     }
@@ -103,7 +103,6 @@ void showMenu(void) {
             default:
                 while (getchar() != '\n');
                 continue;
-
         }
     }
 }
