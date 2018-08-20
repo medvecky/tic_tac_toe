@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-extern void showBoard(void);
+extern void showMenu(void);
 int main() {
-        showBoard();
+    showMenu();
     return 0;
 }
