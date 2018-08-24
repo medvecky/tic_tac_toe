@@ -9,10 +9,12 @@
 void showMenu(void);
 
 void showBoard(void) {
-    clearScreen();
-    showHeader();
-    drawBoard();
-    showFooter();
+    do {
+        clearScreen();
+        showHeader();
+        drawBoard();
+    } while (showFooter() == 1);
+    initGame();
 }
 
 void clearScreen(void) {
@@ -36,21 +38,34 @@ void drawBoard(void) {
     }
 }
 
-void showFooter(void) {
+int showFooter(void) {
+    int input;
     if (isGameOn()) {
         if (isPlayerOneTurn()) {
             printf("\nPlayer 1, enter a number or q for exit:  ");
-            handleTurn(getUserInput());
+            input = getUserInput();
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         } else {
             printf("\nPlayer 2, enter a number or q for exit:  ");
-            handleTurn(getUserInput());
+            input = getUserInput();
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         }
         while (!isTurnValid()) {
             refreshScreen();
             printf("\nInvalid move. ");
-            handleTurn(getUserInput());
+            input = getUserInput();
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         }
-        showBoard();
+        return 1;
     } else {
         if (isPlayerOneWin()) {
             printf("\n==>Player 1 win\n");
@@ -66,6 +81,7 @@ void showFooter(void) {
             getchar();
         }
     }
+    return -1;
 }
 
 int getUserInput(void) {
@@ -74,12 +90,12 @@ int getUserInput(void) {
         while (getchar() != '\n'); //remove invalid symbols from input stream
     }
     if (input == 'q') {
-        showMenu();
+        return -1;
     }
     return input - '0';
 }
 
-void refreshScreen(void){
+void refreshScreen(void) {
     clearScreen();
     showHeader();
     drawBoard();
@@ -87,19 +103,23 @@ void refreshScreen(void){
 
 void showMenu(void) {
     int input;
-    while(1) {
+    while (1) {
         clearScreen();
         printf("\n\tTic  Tac  Toe\n\n");
         printf("1. Game against human.\n");
         printf("q. Exit.\n");
         input = getchar();
+        if (input == '\n') {
+            continue;
+        }
         switch (input) {
             case '1' :
                 while (getchar() != '\n');
                 clearScreen();
                 showBoard();
                 continue;
-            case 'q': exit(0);
+            case 'q':
+                exit(0);
             default:
                 while (getchar() != '\n');
                 continue;

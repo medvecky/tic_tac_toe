@@ -46,8 +46,10 @@ void showHeader(void);
 
 void drawBoard(void);
 
-void showFooter();
+int showFooter();
 
 int getUserInput(void);
 
 void refreshScreen(void);
+
+void initGame(void);

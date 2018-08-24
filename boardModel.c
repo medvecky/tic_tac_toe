@@ -64,4 +64,18 @@ void setPlayerTwoWin(int state) {
     playerTwoWin = state;
 }
 
+void initGame(void) {
+    for (int i = 0; i < 9; i++) {
+        field[i] = (char) (i + 1) + '0';
+    }
 
+    playerOneTurn = 1;
+
+    turnIsValid = 1;
+
+    gameOn = 1;
+
+    playerOneWin = 0;
+
+    playerTwoWin = 0;
+}
