@@ -285,7 +285,7 @@ void showMenu(void) {
         refresh();
         wrefresh(menuWin);
         keypad(menuWin, true);
-        char choices[2][50] = {"*\tGame against human.", "*\tQuit."};
+        char  * choices[2] = {"*\tGame against human.", "*\tQuit."};
         while (1) {
             for (int i = 0; i < 2; i++) {
                 wattron(menuWin, A_BOLD);
