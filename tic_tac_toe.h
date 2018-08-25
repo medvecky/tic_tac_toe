@@ -40,13 +40,13 @@ int trinityCheck(int field1, int field2, int field3);
 
 void deadHeatCheck(void);
 
-void clearScreen(void);
-
 void showHeader(void);
 
 void drawBoard(void);
 
-void showFooter();
-void refreshScreen(void);
+int showFooter(void);
+
 void initNcurses(void);
+
+void initGame(void);
 

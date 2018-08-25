@@ -11,15 +11,19 @@ void showBoardData(int highlight);
 
 int getUserInput(WINDOW *footerwin);
 
-void gameOver(WINDOW *footerWin);
+void endParty(WINDOW *footerWin);
+
+void showMenu(void);
 
 WINDOW *boardWin;
 
 void showBoard(void) {
-    initNcurses();
-    showHeader();
-    drawBoard();
-    showFooter();
+    do {
+        showHeader();
+        drawBoard();
+    } while (showFooter() == 1);
+    clear();
+    initGame();
 }
 
 void showHeader(void) {
@@ -71,8 +75,9 @@ void drawBoard(void) {
     wrefresh(boardWin);
 }
 
-void showFooter(void) {
+int showFooter(void) {
 
+    int input;
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
@@ -90,7 +95,11 @@ void showFooter(void) {
             wattroff(footerWin, A_BOLD);
             refresh();
             wrefresh(footerWin);
-            handleTurn(getUserInput(footerWin));
+            input = getUserInput(footerWin);
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         } else {
             wmove(footerWin, 1, 1);
             wattron(footerWin, A_BOLD);
@@ -100,7 +109,11 @@ void showFooter(void) {
             wattroff(footerWin, A_BOLD);
             refresh();
             wrefresh(footerWin);
-            handleTurn(getUserInput(footerWin));
+            input = getUserInput(footerWin);
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         }
         while (!isTurnValid()) {
             wmove(footerWin, 1, 1);
@@ -109,28 +122,51 @@ void showFooter(void) {
             wattroff(footerWin, A_BOLD);
             refresh();
             wrefresh(footerWin);
-            handleTurn(getUserInput(footerWin));
+            input = getUserInput(footerWin);
+            if (input == -1) {
+                return -1;
+            }
+            handleTurn(input);
         }
-        showBoard();
+        return 1;
     } else {
         if (isPlayerOneWin()) {
             wmove(footerWin, 1, 1);
             wattron(footerWin, A_BOLD);
             wprintw(footerWin, "==>Player 1 win");
+            wmove(footerWin, 2, 1);
+            wprintw(footerWin, "Press any key to continue");
             wattroff(footerWin, A_BOLD);
-            gameOver(footerWin);
+            wrefresh(footerWin);
+            refresh();
+            getch();
+            endParty(footerWin);
+            return -1;
+
         } else if (isPlayerTwoWin()) {
             wmove(footerWin, 1, 1);
             wattron(footerWin, A_BOLD);
             wprintw(footerWin, "==>Player 2 win");
+            wmove(footerWin, 2, 1);
+            wprintw(footerWin, "Press any key to continue");
             wattroff(footerWin, A_BOLD);
-            gameOver(footerWin);
+            wrefresh(footerWin);
+            refresh();
+            getch();
+            endParty(footerWin);
+            return -1;
         } else {
             wmove(footerWin, 1, 1);
             wattron(footerWin, A_BOLD);
             wprintw(footerWin, "==>Nobody win");
+            wmove(footerWin, 2, 1);
+            wprintw(footerWin, "Press any key to continue");
             wattroff(footerWin, A_BOLD);
-            gameOver(footerWin);
+            wrefresh(footerWin);
+            refresh();
+            getch();
+            endParty(footerWin);
+            return -1;
         }
     }
 }
@@ -157,13 +193,13 @@ int getUserInput(WINDOW *footerWin) {
                 }
                 break;
             case KEY_UP:
-                highlight-=3;
+                highlight -= 3;
                 if (highlight < 1) {
                     highlight = 1;
                 }
                 break;
             case KEY_DOWN:
-                highlight+=3;
+                highlight += 3;
                 if (highlight > 9) {
                     highlight = 9;
                 }
@@ -171,12 +207,11 @@ int getUserInput(WINDOW *footerWin) {
             default:
                 break;
         }
-        if(input == 10) {
+        if (input == 10) {
             break;
         } else if ((char) input == 'q') {
-            endwin();
-            exit(0);
-        } else if((input - '0') > 0 && (input - '0') < 10 ) {
+            return -1;
+        } else if ((input - '0') > 0 && (input - '0') < 10) {
             return input - '0';
         }
     }
@@ -227,16 +262,71 @@ void showBoardData(int highlight) {
     }
 }
 
-void gameOver(WINDOW *footerWin) {
+void endParty(WINDOW *footerWin) {
     wmove(footerWin, 2, 1);
     wattron(footerWin, A_BOLD);
     wprintw(footerWin, "Press any key to exit");
     wattroff(footerWin, A_BOLD);
     refresh();
     wrefresh(footerWin);
-    getch();
-    endwin();
 }
 
-
-
+void showMenu(void) {
+    initGame();
+    initNcurses();
+    while (1) {
+        int choice;
+        int highlight = 0;
+        int yMax, xMax;
+        getmaxyx(stdscr, yMax, xMax);
+        WINDOW *menuWin = newwin(15, 30, yMax / 2 - 7, xMax / 2 - 15); //show on center of screen
+        box(menuWin, 0, 0);
+        wbkgd(menuWin, COLOR_PAIR(3));
+        refresh();
+        wrefresh(menuWin);
+        keypad(menuWin, true);
+        char choices[2][50] = {"*\tGame against human.", "*\tQuit."};
+        while (1) {
+            for (int i = 0; i < 2; i++) {
+                wattron(menuWin, A_BOLD);
+                if (i == highlight) {
+                    wattron(menuWin, A_REVERSE);
+                }
+                mvwprintw(menuWin, i + 1, 1, choices[i]);
+                wattroff(menuWin, A_REVERSE);
+                wattroff(menuWin, A_BOLD);
+            }
+            refresh();
+            wrefresh(menuWin);
+            choice = wgetch(menuWin);
+            switch (choice) {
+                case KEY_UP :
+                    highlight--;
+                    if (highlight < 0) {
+                        highlight = 0;
+                    }
+                    break;
+                case KEY_DOWN :
+                    highlight++;
+                    if (highlight > 1) {
+                        highlight = 1;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (choice == 10) {
+                break;
+            }
+        }
+        switch (highlight) {
+            case 0 :
+                clear();
+                showBoard();
+                continue;
+            case 1:
+                endwin();
+                exit(0);
+        }
+    }
+}
